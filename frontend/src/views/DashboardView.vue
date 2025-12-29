@@ -5,22 +5,29 @@ import { useAuthStore } from '../stores/auth';
 const authStore = useAuthStore();
 const lessons = ref([]);
 const progress = ref([]);
+const error = ref(null);
 
 onMounted(async () => {
-  // Fetch lessons
-  const resLessons = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/lessons`);
-  lessons.value = await resLessons.json();
+  try {
+    // Fetch lessons
+    const resLessons = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/lessons`);
+    if (!resLessons.ok) throw new Error('Failed to fetch lessons');
+    lessons.value = await resLessons.json();
 
-  // Fetch progress
-  if (authStore.isAuthenticated) {
-    const resProgress = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/users/me/progress`, {
-        headers: {
-            'Authorization': `Bearer ${authStore.token}`
-        }
-    });
-    if (resProgress.ok) {
-        progress.value = await resProgress.json();
+    // Fetch progress
+    if (authStore.isAuthenticated) {
+      const resProgress = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/users/me/progress`, {
+          headers: {
+              'Authorization': `Bearer ${authStore.token}`
+          }
+      });
+      if (resProgress.ok) {
+          progress.value = await resProgress.json();
+      }
     }
+  } catch (e) {
+    console.error('Dashboard Error:', e);
+    error.value = "Could not connect to the server. Please ensure the backend is running.";
   }
 });
 
@@ -33,6 +40,18 @@ const isCompleted = (lessonId) => {
 <template>
   <div class="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-7xl mx-auto">
+      <div v-if="error" class="mb-8 bg-red-50 border-l-4 border-red-400 p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-red-700">{{ error }}</p>
+          </div>
+        </div>
+      </div>
       <h1 class="text-3xl font-bold text-slate-900 mb-8">Your Learning Path</h1>
       
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
