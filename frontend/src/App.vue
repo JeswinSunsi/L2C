@@ -1,9 +1,10 @@
 <script setup>
 import { useAuthStore } from './stores/auth';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 const authStore = useAuthStore();
 const router = useRouter();
+const route = useRoute();
 
 const logout = () => {
   authStore.logout();
@@ -12,7 +13,7 @@ const logout = () => {
 
 <template>
   <div class="min-h-screen bg-slate-50">
-    <nav v-if="authStore.isAuthenticated" class="bg-white border-b border-slate-200">
+    <nav v-if="authStore.isAuthenticated && route.name !== 'Landing'" class="bg-white border-b border-slate-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
           <div class="flex">
