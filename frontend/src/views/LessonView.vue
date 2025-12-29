@@ -1,0 +1,83 @@
+<script setup>
+import { ref, onMounted, watch, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import Quiz from '../components/Quiz.vue';
+import LogicBuilder from '../components/LogicBuilder.vue';
+import VisualDebugger from '../components/VisualDebugger.vue';
+import MethodLab from '../components/MethodLab.vue';
+import SlicingPlayground from '../components/SlicingPlayground.vue';
+
+const route = useRoute();
+const router = useRouter();
+const lesson = ref(null);
+const loading = ref(true);
+const error = ref(null);
+
+const fetchLesson = async (id) => {
+  loading.value = true;
+  error.value = null;
+  try {
+    const response = await fetch(`http://localhost:8000/lessons/${id}`);
+    if (!response.ok) throw new Error('Lesson not found');
+    lesson.value = await response.json();
+  } catch (err) {
+    error.value = err.message;
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchLesson(route.params.id);
+});
+
+watch(() => route.params.id, (newId) => {
+  fetchLesson(newId);
+});
+
+const currentComponent = computed(() => {
+  if (!lesson.value) return null;
+  switch (lesson.value.type) {
+    case 'quiz': return Quiz;
+    case 'logic_builder': return LogicBuilder;
+    case 'visual_debugger': return VisualDebugger;
+    case 'method_lab': return MethodLab;
+    case 'slicing_playground': return SlicingPlayground;
+    default: return null;
+  }
+});
+
+const handleNext = () => {
+  if (lesson.value && lesson.value.next_lesson_id) {
+    router.push(`/lesson/${lesson.value.next_lesson_id}`);
+  }
+};
+</script>
+
+<template>
+  <div class="min-h-screen bg-gray-50 flex flex-col">
+    <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center gap-6 sticky top-0 z-10">
+      <button @click="router.push('/')" class="text-gray-500 hover:text-gray-900 transition-colors">
+        ←
+      </button>
+      <div class="flex-1 h-1 bg-gray-200 rounded-full overflow-hidden">
+        <div class="h-full bg-blue-600 transition-all duration-500" :style="{ width: `${(route.params.id / 12) * 100}%` }"></div>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-3xl w-full mx-auto p-6 overflow-y-auto">
+      <div v-if="loading" class="text-center py-12 text-gray-500">Loading lesson...</div>
+      <div v-else-if="error" class="text-center py-12 text-red-500">{{ error }}</div>
+      <div v-else>
+        <h1 class="text-2xl font-bold text-gray-900 mb-4">{{ lesson.title }}</h1>
+        <p class="text-gray-600 mb-8 leading-relaxed">{{ lesson.description }}</p>
+        
+        <component 
+          :is="currentComponent" 
+          :data="lesson" 
+          @completed="handleNext"
+        />
+      </div>
+    </main>
+  </div>
+</template>

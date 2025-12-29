@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn to Code - Lesson 1</title>
+    <style>
+        :root {
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --primary: #2563eb; /* Professional Blue */
+            --primary-hover: #1d4ed8;
+            --text-main: #111827;
+            --text-sec: #6b7280;
+            --success: #059669;
+            --error: #dc2626;
+            --border-color: #e5e7eb;
+            --focus-ring: rgba(37, 99, 235, 0.2);
+        }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-sec);
+            padding: 8px;
+            margin: -8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.2s;
+            border-radius: 4px;
+        }
+        .back-btn:hover {
+            color: var(--text-main);
+            background-color: #f3f4f6;
+        }
+        .progress-container {
+            flex: 1;
+            height: 4px;
+            background-color: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 30%;
+            border-radius: 2px;
+            transition: width 0.4s ease;
+        }
+
+        main {
+            flex: 1;
+            padding: 32px 24px;
+            overflow-y: auto;
+            max-width: 640px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 0 0 12px 0;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: -0.025em;
+        }
+        p {
+            line-height: 1.6;
+            color: var(--text-sec);
+            margin: 0 0 32px 0;
+            font-size: 16px;
+        }
+        .code-block {
+            background-color: #1f2937;
+            padding: 24px;
+            border-radius: 8px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            margin-bottom: 40px;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+            border: 1px solid #374151;
+            color: #e5e7eb;
+        }
+        
+        .code-block::before {
+            display: none; /* Remove traffic lights */
+        }
+        .code-content {
+            margin-top: 0;
+        }
+        .keyword { color: #c678dd; }
+        .variable { color: #e06c75; }
+        .string { color: #98c379; }
+
+        .quiz-container {
+            background-color: transparent;
+            padding: 0;
+            border: none;
+            box-shadow: none;
+        }
+        .question {
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: block;
+            font-size: 16px;
+            color: var(--text-main);
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option {
+            padding: 16px;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-main);
+            text-align: left;
+            font-size: 15px;
+            font-family: inherit;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .option:hover {
+            border-color: #d1d5db;
+            background-color: #f9fafb;
+        }
+        /* Minimalist Radio Circle */
+        .option::before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        .option.selected {
+            border-color: var(--primary);
+            background-color: #eff6ff;
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+        .option.selected::before {
+            border-color: var(--primary);
+            background-color: var(--primary);
+            box-shadow: inset 0 0 0 3px #eff6ff;
+        }
+        .option.correct {
+            border-color: var(--success);
+            background-color: #ecfdf5;
+            box-shadow: 0 0 0 1px var(--success);
+        }
+        .option.correct::before {
+            border-color: var(--success);
+            background-color: var(--success);
+            box-shadow: inset 0 0 0 3px #ecfdf5;
+        }
+        .option.wrong {
+            border-color: var(--error);
+            background-color: #fef2f2;
+            box-shadow: 0 0 0 1px var(--error);
+        }
+        .option.wrong::before {
+            border-color: var(--error);
+            background-color: var(--error);
+            content: '';
+            box-shadow: inset 0 0 0 3px #fef2f2;
+        }
+
+        footer {
+            padding: 16px 24px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+            z-index: 100;
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
+        }
+        .footer-content {
+            max-width: 640px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .check-btn {
+            width: 100%;
+            padding: 12px 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .check-btn:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+        }
+        .check-btn:disabled {
+            background-color: #e5e7eb;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+        .feedback {
+            text-align: center;
+            font-weight: 500;
+            font-size: 14px;
+            display: none;
+        }
+        .feedback.visible {
+            display: block;
+        }
+        .feedback.success { color: var(--success); }
+        .feedback.error { color: var(--error); }
+
+        /* Confetti Canvas */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="back-btn">←</button>
+        <div class="progress-container">
+            <div class="progress-bar" style="width: 25%"></div>
+        </div>
+    </header>
+
+    <main>
+        <h1>Variables</h1>
+        <p>In Python, variables are used to store data values. Unlike some other languages, you don't need to declare the type explicitly.</p>
+        
+        <div class="code-block">
+            <span class="variable">message</span> = <span class="string">"Hello World"</span><br>
+            <span class="keyword">print</span>(<span class="variable">message</span>)
+        </div>
+
+        <div class="quiz-container">
+            <span class="question">How do you create a variable named 'score' with value 10?</span>
+            <div class="options" id="options">
+                <button class="option" onclick="selectOption(this, 'wrong')">var score = 10</button>
+                <button class="option" onclick="selectOption(this, 'correct')">score = 10</button>
+                <button class="option" onclick="selectOption(this, 'wrong')">int score = 10</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="feedback" id="feedback"></div>
+            <button class="check-btn" id="checkBtn" onclick="checkAnswer()" disabled>Check Answer</button>
+        </div>
+    </footer>
+
+    <canvas id="confetti-canvas"></canvas>
+    <script>
+        let selectedOption = null;
+        let isCorrect = false;
+        let answered = false;
+
+        function selectOption(element, correctness) {
+            if (answered) return;
+
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            selectedOption = element;
+            isCorrect = correctness === 'correct';
+            
+            document.getElementById('checkBtn').disabled = false;
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = '';
+            feedback.className = 'feedback';
+        }
+
+        function checkAnswer() {
+            if (!selectedOption) return;
+
+            const feedback = document.getElementById('feedback');
+            const btn = document.getElementById('checkBtn');
+
+            if (answered) {
+                if (btn.textContent === "Continue") {
+                    resetQuiz();
+                }
+                return;
+            }
+
+            answered = true;
+
+            if (isCorrect) {
+                selectedOption.classList.add('correct');
+                feedback.textContent = "Correct! Great job.";
+                feedback.className = "feedback success visible";
+                btn.textContent = "Continue";
+                document.querySelector('.progress-bar').style.width = '35%';
+                fireConfetti();
+            } else {
+                selectedOption.classList.add('wrong');
+                feedback.textContent = "Not quite. In Python, we don't use 'var' or 'int'.";
+                feedback.className = "feedback error visible";
+                btn.textContent = "Try Again";
+                btn.onclick = resetQuiz;
+            }
+        }
+
+        function resetQuiz() {
+            answered = false;
+            selectedOption.classList.remove('wrong', 'selected', 'correct');
+            selectedOption = null;
+            
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = "";
+            feedback.className = "feedback";
+            
+            const btn = document.getElementById('checkBtn');
+            btn.textContent = "Check Answer";
+            btn.disabled = true;
+            btn.onclick = checkAnswer;
+        }
+
+        // Simple Confetti Implementation
+        function fireConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const particleCount = 100;
+            // Professional palette: Blues, Success Green, Gold
+            const colors = ['#2563eb', '#3b82f6', '#60a5fa', '#10b981', '#f59e0b'];
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 20,
+                    vy: (Math.random() - 0.5) * 20 - 5,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    life: 100,
+                    gravity: 0.5
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let activeParticles = false;
+
+                particles.forEach(p => {
+                    if (p.life > 0) {
+                        activeParticles = true;
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += p.gravity;
+                        p.life -= 1;
+                        p.size *= 0.96;
+
+                        ctx.fillStyle = p.color;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+
+                if (activeParticles) {
+                    requestAnimationFrame(animate);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+
+            animate();
+        }
+    </script>
+</body>
+</html>

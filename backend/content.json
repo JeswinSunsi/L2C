@@ -1,0 +1,77 @@
+[
+  {
+    "id": 1,
+    "title": "Variables",
+    "type": "quiz",
+    "description": "In Python, variables are used to store data values. Unlike some other languages, you don't need to declare the type explicitly.",
+    "code_block": "<span class=\"variable\">message</span> = <span class=\"string\">\"Hello World\"</span><br><span class=\"keyword\">print</span>(<span class=\"variable\">message</span>)",
+    "quiz": {
+      "question": "How do you create a variable named 'score' with value 10?",
+      "options": [
+        { "id": "a", "text": "var score = 10", "is_correct": false },
+        { "id": "b", "text": "score = 10", "is_correct": true },
+        { "id": "c", "text": "int score = 10", "is_correct": false }
+      ],
+      "feedback_correct": "Correct! Python infers the type.",
+      "feedback_wrong": "Not quite. Python doesn't use 'var' or 'int'."
+    },
+    "next_lesson_id": 2
+  },
+  {
+    "id": 2,
+    "title": "Logic Builder",
+    "type": "logic_builder",
+    "description": "Construct a program that checks if a person is an adult (age 18 or older). Tap the lines to arrange them in the correct order.",
+    "puzzle_lines": [
+      { "id": 1, "html": "<span class=\"kwd\">if</span> age >= <span class=\"num\">18</span>:", "indent": 0 },
+      { "id": 2, "html": "<span class=\"kwd\">print</span>(<span class=\"str\">\"Adult\"</span>)", "indent": 1 },
+      { "id": 3, "html": "age = <span class=\"num\">20</span>", "indent": 0 },
+      { "id": 4, "html": "<span class=\"kwd\">else</span>:", "indent": 0 },
+      { "id": 5, "html": "<span class=\"kwd\">print</span>(<span class=\"str\">\"Minor\"</span>)", "indent": 1 }
+    ],
+    "correct_order": [3, 1, 2, 4, 5],
+    "next_lesson_id": 3
+  },
+  {
+    "id": 3,
+    "title": "Visual Debugger",
+    "type": "visual_debugger",
+    "description": "Step through the code to see how the variables change.",
+    "code_lines": [
+      { "id": 1, "html": "x = <span class=\"num\">5</span>", "indent": 0 },
+      { "id": 2, "html": "y = <span class=\"num\">10</span>", "indent": 0 },
+      { "id": 3, "html": "z = x + y", "indent": 0 },
+      { "id": 4, "html": "<span class=\"kwd\">print</span>(z)", "indent": 0 }
+    ],
+    "steps": [
+      { "line": 1, "variables": { "x": 5 } },
+      { "line": 2, "variables": { "x": 5, "y": 10 } },
+      { "line": 3, "variables": { "x": 5, "y": 10, "z": 15 } },
+      { "line": 4, "variables": { "x": 5, "y": 10, "z": 15 }, "output": "15" }
+    ],
+    "next_lesson_id": 4
+  },
+  {
+    "id": 4,
+    "title": "String Lab",
+    "type": "method_lab",
+    "description": "Transform the messy input string into the clean target format by applying the correct methods in order.",
+    "initial_value": "\"  Data Science  \"",
+    "target_value": "\"data_science\"",
+    "methods": [
+      { "name": ".strip()", "desc": "Removes whitespace from both ends" },
+      { "name": ".lower()", "desc": "Converts to lowercase" },
+      { "name": ".upper()", "desc": "Converts to uppercase" },
+      { "name": ".replace(' ', '_')", "desc": "Replaces spaces with underscores" }
+    ],
+    "next_lesson_id": 5
+  },
+  {
+    "id": 5,
+    "title": "Slicing Playground",
+    "type": "slicing_playground",
+    "description": "Python's slicing syntax [start:stop:step] is powerful but tricky. Experiment with the controls to see how it selects items.",
+    "list_items": ["P", "Y", "T", "H", "O", "N", "I", "S", "T", "A"],
+    "next_lesson_id": 6
+  }
+]

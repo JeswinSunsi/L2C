@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn to Code - Reference Radar</title>
+    <style>
+        :root {
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --text-main: #111827;
+            --text-sec: #6b7280;
+            --success: #059669;
+            --border-color: #e5e7eb;
+            --code-bg: #1f2937;
+            --obj-bg: #fffbeb;
+            --obj-border: #fcd34d;
+        }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-sec);
+            padding: 8px;
+            margin: -8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.2s;
+            border-radius: 4px;
+        }
+        .back-btn:hover {
+            color: var(--text-main);
+            background-color: #f3f4f6;
+        }
+
+        main {
+            flex: 1;
+            padding: 32px 24px;
+            overflow-y: auto;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 0;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: -0.025em;
+        }
+        p {
+            line-height: 1.6;
+            color: var(--text-sec);
+            margin: 0;
+            font-size: 16px;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .scenario-btn {
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+        .scenario-btn.active {
+            background-color: #eff6ff;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Workspace */
+        .workspace {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 32px;
+            height: 500px;
+        }
+        @media (max-width: 800px) {
+            .workspace { grid-template-columns: 1fr; height: auto; }
+        }
+
+        /* Code Panel */
+        .code-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .code-display {
+            background-color: var(--code-bg);
+            color: #e5e7eb;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            flex: 1;
+        }
+        .line { padding: 0 4px; border-radius: 2px; cursor: default; }
+        .line.active { background-color: #374151; color: white; }
+        
+        .step-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .step-btn:disabled { background-color: #9ca3af; cursor: not-allowed; }
+
+        /* Memory Visualizer */
+        .memory-area {
+            background-color: #f3f4f6;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+        }
+        
+        .col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        .col-header {
+            text-transform: uppercase;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-sec);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .var-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .var-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--text-main);
+            border-radius: 50%;
+            margin-right: -16px; /* Push to edge */
+        }
+
+        .obj-card {
+            background: var(--obj-bg);
+            border: 2px solid var(--obj-border);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            text-align: center;
+            min-width: 60px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: relative;
+            align-self: center;
+            transition: all 0.3s;
+        }
+        .obj-card.changed {
+            transform: scale(1.1);
+            background-color: #fff7ed;
+            border-color: #f97316;
+        }
+        .obj-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--text-main);
+            border-radius: 50%;
+            position: absolute;
+            left: -4px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0; /* Hidden, just for anchor calc */
+        }
+
+        /* SVG Layer */
+        .svg-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        path {
+            fill: none;
+            stroke: var(--text-sec);
+            stroke-width: 2;
+            transition: d 0.5s ease;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <button class="back-btn" onclick="window.location.href='ten.html'">←</button>
+        <div style="flex:1"></div>
+        <button class="back-btn" onclick="window.location.href='twelve.html'">→</button>
+    </header>
+
+    <main>
+        <div>
+            <h1>Reference Radar</h1>
+            <p>Visualize how Python variables refer to objects in memory. Understand the difference between <strong>Mutable</strong> (Lists) and <strong>Immutable</strong> (Integers) types.</p>
+        </div>
+
+        <div class="controls">
+            <button class="scenario-btn active" onclick="loadScenario('mutable')">Scenario 1: Lists (Mutable)</button>
+            <button class="scenario-btn" onclick="loadScenario('immutable')">Scenario 2: Integers (Immutable)</button>
+        </div>
+
+        <div class="workspace">
+            <div class="code-panel">
+                <div class="code-display" id="codeDisplay">
+                    <!-- Code injected here -->
+                </div>
+                <button class="step-btn" id="stepBtn" onclick="step()">Step Forward</button>
+            </div>
+
+            <div class="memory-area" id="memoryArea">
+                <svg class="svg-layer" id="svgLayer"></svg>
+                
+                <div class="col">
+                    <div class="col-header">Variables (Names)</div>
+                    <div id="varContainer" style="display:flex; flex-direction:column; gap:20px;"></div>
+                </div>
+                
+                <div class="col">
+                    <div class="col-header">Objects (Values)</div>
+                    <div id="objContainer" style="display:flex; flex-direction:column; gap:20px;"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const scenarios = {
+            mutable: {
+                code: [
+                    "a = [1, 2]",
+                    "b = a",
+                    "b.append(3)"
+                ],
+                steps: [
+                    { 
+                        line: 0, 
+                        action: 'create', 
+                        var: 'a', 
+                        val: '[1, 2]', 
+                        id: 'obj1' 
+                    },
+                    { 
+                        line: 1, 
+                        action: 'alias', 
+                        var: 'b', 
+                        ref: 'a' // b points to what a points to
+                    },
+                    { 
+                        line: 2, 
+                        action: 'mutate', 
+                        id: 'obj1', 
+                        newVal: '[1, 2, 3]' 
+                    }
+                ]
+            },
+            immutable: {
+                code: [
+                    "x = 10",
+                    "y = x",
+                    "y = y + 1"
+                ],
+                steps: [
+                    { 
+                        line: 0, 
+                        action: 'create', 
+                        var: 'x', 
+                        val: '10', 
+                        id: 'objA' 
+                    },
+                    { 
+                        line: 1, 
+                        action: 'alias', 
+                        var: 'y', 
+                        ref: 'x' 
+                    },
+                    { 
+                        line: 2, 
+                        action: 'reassign', 
+                        var: 'y', 
+                        val: '11', 
+                        id: 'objB' 
+                    }
+                ]
+            }
+        };
+
+        let currentScenario = null;
+        let currentStepIndex = 0;
+        let state = {
+            vars: {}, // name -> objId
+            objs: {}  // objId -> value
+        };
+
+        function loadScenario(type) {
+            // UI Update
+            document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            currentScenario = scenarios[type];
+            currentStepIndex = 0;
+            state = { vars: {}, objs: {} };
+
+            // Render Code
+            const codeEl = document.getElementById('codeDisplay');
+            codeEl.innerHTML = currentScenario.code.map((line, i) => 
+                `<div class="line" id="line-${i}">${line}</div>`
+            ).join('');
+
+            // Clear Memory
+            document.getElementById('varContainer').innerHTML = '';
+            document.getElementById('objContainer').innerHTML = '';
+            document.getElementById('svgLayer').innerHTML = '';
+            
+            // Reset Button
+            const btn = document.getElementById('stepBtn');
+            btn.disabled = false;
+            btn.textContent = "Step Forward";
+        }
+
+        function step() {
+            if (currentStepIndex >= currentScenario.steps.length) return;
+
+            const stepData = currentScenario.steps[currentStepIndex];
+            
+            // Highlight Line
+            document.querySelectorAll('.line').forEach(el => el.classList.remove('active'));
+            document.getElementById(`line-${stepData.line}`).classList.add('active');
+
+            // Execute Logic
+            if (stepData.action === 'create') {
+                createObject(stepData.id, stepData.val);
+                createVar(stepData.var, stepData.id);
+            } 
+            else if (stepData.action === 'alias') {
+                // Point var to same obj as ref
+                const targetId = state.vars[stepData.ref];
+                createVar(stepData.var, targetId);
+            }
+            else if (stepData.action === 'mutate') {
+                // Update object value in place
+                updateObject(stepData.id, stepData.newVal);
+            }
+            else if (stepData.action === 'reassign') {
+                // Create new object and point var to it
+                createObject(stepData.id, stepData.val);
+                updateVar(stepData.var, stepData.id);
+            }
+
+            currentStepIndex++;
+            
+            // Draw Lines
+            requestAnimationFrame(drawConnections);
+
+            // Check End
+            if (currentStepIndex >= currentScenario.steps.length) {
+                const btn = document.getElementById('stepBtn');
+                btn.disabled = true;
+                btn.textContent = "Finished";
+            }
+        }
+
+        function createObject(id, val) {
+            state.objs[id] = val;
+            const container = document.getElementById('objContainer');
+            const div = document.createElement('div');
+            div.className = 'obj-card';
+            div.id = `obj-${id}`;
+            div.textContent = val;
+            container.appendChild(div);
+        }
+
+        function updateObject(id, newVal) {
+            state.objs[id] = newVal;
+            const el = document.getElementById(`obj-${id}`);
+            el.textContent = newVal;
+            el.classList.add('changed');
+            setTimeout(() => el.classList.remove('changed'), 500);
+        }
+
+        function createVar(name, targetId) {
+            state.vars[name] = targetId;
+            const container = document.getElementById('varContainer');
+            const div = document.createElement('div');
+            div.className = 'var-card';
+            div.id = `var-${name}`;
+            div.innerHTML = `
+                <span>${name}</span>
+                <div class="var-dot"></div>
+            `;
+            container.appendChild(div);
+        }
+
+        function updateVar(name, targetId) {
+            state.vars[name] = targetId;
+            // No DOM change needed for var card itself, just the line will update
+        }
+
+        function drawConnections() {
+            const svg = document.getElementById('svgLayer');
+            svg.innerHTML = ''; // Clear lines
+
+            const memoryRect = document.getElementById('memoryArea').getBoundingClientRect();
+
+            for (const [varName, objId] of Object.entries(state.vars)) {
+                const varEl = document.getElementById(`var-${varName}`);
+                const objEl = document.getElementById(`obj-${objId}`);
+
+                if (varEl && objEl) {
+                    const varRect = varEl.querySelector('.var-dot').getBoundingClientRect();
+                    const objRect = objEl.getBoundingClientRect();
+
+                    // Calculate relative coordinates
+                    const x1 = varRect.left + varRect.width/2 - memoryRect.left;
+                    const y1 = varRect.top + varRect.height/2 - memoryRect.top;
+                    
+                    const x2 = objRect.left - memoryRect.left;
+                    const y2 = objRect.top + objRect.height/2 - memoryRect.top;
+
+                    // Create Path
+                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    
+                    // Bezier curve
+                    const d = `M ${x1} ${y1} C ${x1 + 50} ${y1}, ${x2 - 50} ${y2}, ${x2} ${y2}`;
+                    
+                    path.setAttribute("d", d);
+                    path.setAttribute("stroke", "#9ca3af");
+                    path.setAttribute("stroke-width", "2");
+                    path.setAttribute("fill", "none");
+                    path.setAttribute("marker-end", "url(#arrowhead)");
+                    
+                    svg.appendChild(path);
+                }
+            }
+            
+            // Add Arrow Marker definition if not exists
+            if (!document.getElementById('arrowhead')) {
+                const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+                defs.innerHTML = `
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                    refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#9ca3af" />
+                    </marker>
+                `;
+                svg.appendChild(defs);
+            }
+        }
+
+        // Handle resize
+        window.addEventListener('resize', drawConnections);
+
+        // Init
+        loadScenario('mutable');
+
+    </script>
+</body>
+</html>

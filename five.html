@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn to Code - Slicing Playground</title>
+    <style>
+        :root {
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --text-main: #111827;
+            --text-sec: #6b7280;
+            --success: #059669;
+            --error: #dc2626;
+            --border-color: #e5e7eb;
+            --focus-ring: rgba(37, 99, 235, 0.2);
+            --item-bg: #f3f4f6;
+            --item-selected: #dbeafe;
+            --item-border-selected: #2563eb;
+        }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-sec);
+            padding: 8px;
+            margin: -8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.2s;
+            border-radius: 4px;
+        }
+        .back-btn:hover {
+            color: var(--text-main);
+            background-color: #f3f4f6;
+        }
+        .progress-container {
+            flex: 1;
+            height: 4px;
+            background-color: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 100%;
+            border-radius: 2px;
+            transition: width 0.4s ease;
+        }
+
+        main {
+            flex: 1;
+            padding: 32px 24px;
+            overflow-y: auto;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin: 0;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: -0.025em;
+        }
+        p {
+            line-height: 1.6;
+            color: var(--text-sec);
+            margin: 0;
+            font-size: 16px;
+        }
+
+        /* Slicing Visualizer */
+        .visualizer-container {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        /* The List Visualization */
+        .list-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 20px 0;
+            overflow-x: auto;
+            min-height: 120px;
+        }
+
+        .list-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            min-width: 40px;
+        }
+
+        .item-box {
+            width: 48px;
+            height: 48px;
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .list-item.active .item-box {
+            background-color: var(--item-selected);
+            border-color: var(--item-border-selected);
+            color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.1);
+        }
+
+        .index-label {
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--text-sec);
+            transition: color 0.2s;
+        }
+        .index-pos { margin-bottom: 4px; }
+        .index-neg { margin-top: 4px; }
+        
+        .list-item.active .index-label {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Controls */
+        .controls-area {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .code-display {
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 18px;
+            color: var(--text-main);
+            background-color: #f9fafb;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .syntax-hl { color: var(--primary); font-weight: bold; }
+
+        .sliders-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        
+        @media (max-width: 600px) {
+            .sliders-grid { grid-template-columns: 1fr; }
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--text-sec);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        input[type="number"] {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--focus-ring);
+        }
+
+        /* Result Preview */
+        .result-area {
+            text-align: center;
+        }
+        .result-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-sec);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .result-value {
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 20px;
+            color: var(--success);
+            min-height: 30px;
+        }
+
+        footer {
+            padding: 16px 24px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+            z-index: 100;
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
+        }
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            color: var(--text-sec);
+            font-size: 14px;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <button class="back-btn" onclick="window.location.href='four.html'">←</button>
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+    </header>
+
+    <main>
+        <div>
+            <h1>Slicing Playground</h1>
+            <p>Python's slicing syntax <code>[start:stop:step]</code> is powerful but tricky. Experiment with the controls to see how it selects items.</p>
+        </div>
+
+        <div class="visualizer-container">
+            
+            <!-- The List -->
+            <div class="list-container" id="listContainer">
+                <!-- Items injected by JS -->
+            </div>
+
+            <!-- Controls -->
+            <div class="controls-area">
+                <div class="code-display">
+                    my_list[<span id="codeStart" class="syntax-hl"></span>:<span id="codeStop" class="syntax-hl"></span>:<span id="codeStep" class="syntax-hl"></span>]
+                </div>
+
+                <div class="sliders-grid">
+                    <div class="control-group">
+                        <label class="control-label">Start</label>
+                        <input type="number" id="inputStart" value="1" oninput="updateSlice()">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Stop</label>
+                        <input type="number" id="inputStop" value="4" oninput="updateSlice()">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Step</label>
+                        <input type="number" id="inputStep" value="1" oninput="updateSlice()">
+                    </div>
+                </div>
+
+                <div class="result-area">
+                    <div class="result-label">Resulting List</div>
+                    <div class="result-value" id="resultValue">['y', 't', 'h']</div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            Try negative numbers to count from the end!
+        </div>
+    </footer>
+
+    <script>
+        const data = ['P', 'y', 't', 'h', 'o', 'n', '!', '!', '!'];
+        const listContainer = document.getElementById('listContainer');
+
+        function init() {
+            // Render list items
+            data.forEach((char, index) => {
+                const negIndex = index - data.length;
+                
+                const el = document.createElement('div');
+                el.className = 'list-item';
+                el.id = `item-${index}`;
+                el.innerHTML = `
+                    <span class="index-label index-pos">${index}</span>
+                    <div class="item-box">'${char}'</div>
+                    <span class="index-label index-neg">${negIndex}</span>
+                `;
+                listContainer.appendChild(el);
+            });
+
+            updateSlice();
+        }
+
+        function updateSlice() {
+            // Get inputs
+            let startVal = document.getElementById('inputStart').value;
+            let stopVal = document.getElementById('inputStop').value;
+            let stepVal = document.getElementById('inputStep').value;
+
+            // Update Code Display (handle empty strings for defaults)
+            document.getElementById('codeStart').textContent = startVal;
+            document.getElementById('codeStop').textContent = stopVal;
+            document.getElementById('codeStep').textContent = stepVal;
+
+            // Parse integers or defaults
+            // Python defaults: 
+            // step: 1
+            // start: 0 (if step > 0) else len-1
+            // stop: len (if step > 0) else -len-1
+            
+            let step = stepVal === '' ? 1 : parseInt(stepVal);
+            if (step === 0) step = 1; // Prevent infinite loop/error
+
+            let len = data.length;
+            
+            let startDefault = step > 0 ? 0 : len - 1;
+            let stopDefault = step > 0 ? len : -len - 1;
+
+            let start = startVal === '' ? startDefault : parseInt(startVal);
+            let stop = stopVal === '' ? stopDefault : parseInt(stopVal);
+
+            // Normalize indices for calculation
+            // In Python, slicing handles out of bounds gracefully
+            
+            let actualStart = start;
+            let actualStop = stop;
+
+            // Handle negative indices for calculation
+            if (actualStart < 0) actualStart += len;
+            if (actualStop < 0) actualStop += len;
+
+            // Clamp is NOT done in Python slicing logic for the loop bounds usually, 
+            // but for visual highlighting we need to match indices 0..len-1
+            
+            // Calculate selected indices
+            let selectedIndices = [];
+            
+            if (step > 0) {
+                // Clamp start/stop for the loop
+                if (actualStart < 0) actualStart = 0; // Python behavior: slice starts at 0 if negative index goes way back
+                // Actually Python behavior is complex. 
+                // simple simulation:
+                
+                for (let i = actualStart; i < actualStop; i += step) {
+                    if (i >= 0 && i < len) {
+                        selectedIndices.push(i);
+                    }
+                }
+            } else {
+                // Negative step
+                for (let i = actualStart; i > actualStop; i += step) {
+                    if (i >= 0 && i < len) {
+                        selectedIndices.push(i);
+                    }
+                }
+            }
+
+            // Update Visuals
+            // 1. Reset all
+            document.querySelectorAll('.list-item').forEach(el => el.classList.remove('active'));
+            
+            // 2. Highlight selected
+            let resultArr = [];
+            selectedIndices.forEach(idx => {
+                const el = document.getElementById(`item-${idx}`);
+                if (el) el.classList.add('active');
+                resultArr.push(`'${data[idx]}'`);
+            });
+
+            // 3. Update Result Text
+            document.getElementById('resultValue').textContent = `[${resultArr.join(', ')}]`;
+        }
+
+        init();
+    </script>
+</body>
+</html>
