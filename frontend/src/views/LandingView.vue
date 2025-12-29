@@ -72,24 +72,7 @@ onMounted(() => {
 
 <template>
   <div class="text-slate-800 font-sans antialiased selection:bg-accent-indigo selection:text-white overflow-x-hidden">
-    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/60 supports-[backdrop-filter]:bg-white/60">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center text-white font-mono font-bold text-lg shadow-lg shadow-slate-900/20">
-                        &lt;/&gt;
-                    </div>
-                    <span class="font-display font-bold text-xl tracking-tight text-slate-900">PolyGlot_Lab</span>
-                </div>
-                
-                <div class="hidden md:flex items-center gap-4">
-                    <button @click="startLearning" class="px-6 py-2.5 text-sm font-bold text-white bg-slate-900 rounded-lg hover:bg-accent-indigo transition-colors shadow-lg shadow-slate-900/10">
-                        Start Coding
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
+
 
     <section class="pt-32 pb-20 lg:pt-48 lg:pb-32 relative w-full max-w-[100vw]">
         <div class="absolute inset-0 overflow-hidden pointer-events-none -z-10">
