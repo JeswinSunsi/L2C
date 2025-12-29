@@ -1,11 +1,17 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 const startLearning = () => {
-  router.push('/lesson/1');
+  if (authStore.isAuthenticated) {
+    router.push('/dashboard');
+  } else {
+    router.push('/register');
+  }
 };
 
 onMounted(() => {
@@ -41,6 +47,26 @@ onMounted(() => {
     const badge = document.getElementById('success-badge');
     if(badge) badge.classList.remove('scale-0');
   }, 3000);
+
+  // Scroll Reveal
+  const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+  };
+
+  const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+          if (entry.isIntersecting) {
+              entry.target.classList.add('active');
+              observer.unobserve(entry.target);
+          }
+      });
+  }, observerOptions);
+
+  document.querySelectorAll('.reveal').forEach(el => {
+      observer.observe(el);
+  });
 });
 </script>
 
@@ -156,6 +182,174 @@ onMounted(() => {
             </div>
         </div>
     </section>
+
+    <section class="border-y border-slate-200 bg-white/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-slate-200/50">
+                <div class="reveal">
+                    <div class="text-3xl font-display font-bold text-slate-900">1.2M+</div>
+                    <div class="text-sm text-slate-500 font-medium mt-1 uppercase tracking-wide">Lines Written</div>
+                </div>
+                <div class="reveal delay-100">
+                    <div class="text-3xl font-display font-bold text-slate-900">85%</div>
+                    <div class="text-sm text-slate-500 font-medium mt-1 uppercase tracking-wide">Completion Rate</div>
+                </div>
+                <div class="reveal delay-200">
+                    <div class="text-3xl font-display font-bold text-slate-900">500+</div>
+                    <div class="text-sm text-slate-500 font-medium mt-1 uppercase tracking-wide">Challenges</div>
+                </div>
+                <div class="reveal delay-300">
+                    <div class="text-3xl font-display font-bold text-slate-900">4.9/5</div>
+                    <div class="text-sm text-slate-500 font-medium mt-1 uppercase tracking-wide">User Rating</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pt-24 pb-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-16 md:flex justify-between items-end reveal">
+                <div>
+                    <h2 class="font-display text-4xl font-bold text-slate-900 mb-4">Choose your architecture.</h2>
+                    <p class="text-slate-600 max-w-xl text-lg">We don't just teach syntax. We teach you how to build scalable systems from day one.</p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="reveal delay-0">
+                    <div class="tech-card rounded-2xl p-8 relative overflow-hidden group cursor-pointer h-full">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-50 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                        <div class="relative z-10 flex flex-col h-full">
+                            <div class="w-14 h-14 bg-white border border-slate-200 rounded-xl flex items-center justify-center text-3xl mb-6 shadow-sm group-hover:rotate-6 transition-transform">🐍</div>
+                            <h3 class="font-display text-xl font-bold text-slate-900 mb-2">Python Intelligence</h3>
+                            <p class="text-slate-500 mb-8 leading-relaxed flex-grow">Master the language of AI and Data Science. From simple scripts to neural networks.</p>
+                            
+                            <div class="mt-auto">
+                                <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden mb-3">
+                                    <div class="bg-yellow-400 h-full w-2/3 rounded-full"></div>
+                                </div>
+                                <div class="flex justify-between text-xs font-mono text-slate-400">
+                                    <span>Beginner</span>
+                                    <span>8 Modules</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reveal delay-100">
+                    <div class="tech-card rounded-2xl p-8 relative overflow-hidden group cursor-pointer border-indigo-200 ring-2 ring-indigo-50 h-full">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                        <div class="relative z-10 flex flex-col h-full">
+                            <div class="w-14 h-14 bg-white border border-slate-200 rounded-xl flex items-center justify-center text-3xl mb-6 shadow-sm group-hover:rotate-6 transition-transform">⚛️</div>
+                            <h3 class="font-display text-xl font-bold text-slate-900 mb-2">React Frontend</h3>
+                            <p class="text-slate-500 mb-8 leading-relaxed flex-grow">Build interactive UIs. Learn state management, hooks, and modern component design.</p>
+                            
+                            <div class="mt-auto">
+                                <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden mb-3">
+                                    <div class="bg-accent-indigo h-full w-3/4 rounded-full"></div>
+                                </div>
+                                <div class="flex justify-between text-xs font-mono text-slate-400">
+                                    <span>Intermediate</span>
+                                    <span>12 Modules</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reveal delay-200">
+                    <div class="tech-card rounded-2xl p-8 relative overflow-hidden group cursor-pointer h-full">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-50 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                        <div class="relative z-10 flex flex-col h-full">
+                            <div class="w-14 h-14 bg-white border border-slate-200 rounded-xl flex items-center justify-center text-3xl mb-6 shadow-sm group-hover:rotate-6 transition-transform">☁️</div>
+                            <h3 class="font-display text-xl font-bold text-slate-900 mb-2">Cloud Backend</h3>
+                            <p class="text-slate-500 mb-8 leading-relaxed flex-grow">Serverless functions, databases, and APIs. The engine room of modern apps.</p>
+                            
+                            <div class="mt-auto">
+                                <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden mb-3">
+                                    <div class="bg-accent-cyan h-full w-1/2 rounded-full"></div>
+                                </div>
+                                <div class="flex justify-between text-xs font-mono text-slate-400">
+                                    <span>Advanced</span>
+                                    <span>10 Modules</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pb-20 pt-0 reveal">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-slate-900 rounded-3xl p-12 relative overflow-hidden text-center shadow-2xl">
+                <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+                    <div class="absolute -top-1/2 -left-1/4 w-[800px] h-[800px] border border-slate-800 rounded-full opacity-30 animate-pulse"></div>
+                    <div class="absolute -top-1/2 -right-1/4 w-[600px] h-[600px] border border-slate-700 rounded-full opacity-30"></div>
+                </div>
+
+                <div class="relative z-10">
+                    <h2 class="font-display text-3xl md:text-5xl font-bold text-white mb-6">Compile Your Career.</h2>
+                    <p class="text-slate-400 mb-10 max-w-xl mx-auto text-lg leading-relaxed">Join a community of builders. The compiler is ready. The tests are written. All that's missing is you.</p>
+                    
+                    <div class="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto">
+                        <button @click="startLearning" class="px-8 py-4 font-bold text-slate-900 bg-white rounded-xl hover:bg-slate-200 transition-colors whitespace-nowrap shadow-lg shadow-white/10">
+                            Get Access
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white border-t border-slate-200 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+                
+                <div class="col-span-2 lg:col-span-2">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 bg-slate-900 rounded-md flex items-center justify-center text-white font-mono font-bold text-sm">
+                            &lt;/&gt;
+                        </div>
+                        <span class="font-display font-bold text-xl tracking-tight text-slate-900">PolyGlot_Lab</span>
+                    </div>
+                    <p class="text-slate-500 text-sm leading-relaxed max-w-xs mb-6">
+                        Reverse-engineering computer science education. We build interactive playgrounds for the next generation of software architects.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-900 mb-4 text-sm uppercase tracking-wider">Curriculum</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-500 hover:text-accent-indigo transition-colors text-sm">Python Logic</a></li>
+                        <li><a href="#" class="text-slate-500 hover:text-accent-indigo transition-colors text-sm">React Systems</a></li>
+                        <li><a href="#" class="text-slate-500 hover:text-accent-indigo transition-colors text-sm">Cloud Architecture</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-900 mb-4 text-sm uppercase tracking-wider">Company</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-500 hover:text-accent-indigo transition-colors text-sm">About Us</a></li>
+                        <li><a href="#" class="text-slate-500 hover:text-accent-indigo transition-colors text-sm">Careers</a></li>
+                    </ul>
+                </div>
+
+            </div>
+            
+            <div class="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="text-slate-400 text-xs font-mono">
+                    © 2024 PolyGlot Inc. All rights reserved.
+                </div>
+                <div class="flex items-center gap-2 text-xs font-medium text-slate-400">
+                    <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                    System Status: Operational
+                </div>
+            </div>
+        </div>
+    </footer>
   </div>
 </template>
 

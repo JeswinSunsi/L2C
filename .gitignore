@@ -1,0 +1,72 @@
+############################
+# OS / Editor
+############################
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+############################
+# Python / FastAPI
+############################
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+############################
+# Node / Vue / Vite
+############################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+dist/
+dist-ssr/
+
+# Vite cache
+.vite/
+
+############################
+# Optional: Docker
+############################
+*.local
+docker-compose.override.yml
+
+node_modules/
+dist/
+dist-ssr/
+.vite/
+
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
